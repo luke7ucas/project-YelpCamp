@@ -57,7 +57,7 @@ app.use(flash());
 // FLASH middleware
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
-    res.locals.error = req.flas('error');
+    res.locals.error = req.flash('error');
     next();
 })
 

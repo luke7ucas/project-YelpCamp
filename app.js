@@ -10,6 +10,7 @@ const methodOverride = require('method-override');
 const campgrounds = require('./routes/campgrounds.js');
 const reviews = require('./routes/reviews');
 
+const session = require('express-session');
 
 // DATABASE CONNECTION
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -38,6 +39,18 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const sessionConfig = {
+    secret: 'thisshouldbeabettersecet',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // a week from now
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+app.use(session(sessionConfig));
 // ---
 
 

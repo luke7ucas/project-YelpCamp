@@ -5,14 +5,15 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const { campgroundSchema } = require('../schemas.js');
 const ExpressError = require('../utils/ExpressError');
-const Campground = require('../models/campground');
+
 const { isLoggedIn, isAuthor, validateCampground } = require('../middleware.js');
 
+const Campground = require('../models/campground');
 
 // ROUTES
 router.get('/', catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds })
+    res.render('campgrounds/index.ejs', { campgrounds })
 }));
 
 router.get('/new', isLoggedIn, (req, res) => {
@@ -29,7 +30,20 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 }))
 
 router.get('/:id', catchAsync(async (req, res,) => {
-    const campground = await (await Campground.findById(req.params.id).populate('reviews').populate('author'));
+
+
+
+    const campground = await (await Campground.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author'));
+
+
+
+
+
     console.log(campground);
     if (!campground) {
         req.flash('error', 'Cannot find that campground!');

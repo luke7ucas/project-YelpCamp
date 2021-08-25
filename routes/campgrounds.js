@@ -38,7 +38,8 @@ router.route('/:id')
     .put(
         isLoggedIn,
         isAuthor,
-        upload.array('images'),
+        upload.array('images'), // where is this 'images' coming from?
+                                // from: 
         validateCampground,
         catchAsync(campgrounds.updateCampground))
     .delete(

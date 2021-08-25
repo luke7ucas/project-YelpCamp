@@ -20,13 +20,13 @@ module.exports.createCampground = async (req, res, next) => {
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     campground.author = req.user._id;
     await campground.save();
-    console.log(campground);
+    console.log('from controllers/campgrounds.js, createCampground', campground);
     req.flash('success', 'Successfully made a new campground!');
     res.redirect(`/campgrounds/${campground._id}`);
 }
 
 
-module.exports.showCampground = async (req, res,) => {
+module.exports.showCampground = async (req, res) => {
     const campground = await (await Campground.findById(req.params.id).populate({
         path: 'reviews',
         populate: {
@@ -38,7 +38,7 @@ module.exports.showCampground = async (req, res,) => {
         res.redirect('/campgrounds');
     }
     res.render('campgrounds/show', { campground });
-    console.log(campground.images);
+    console.log('from controllers/campgrounds.js, showCampground', campground.images);
 
 }
 
@@ -58,12 +58,19 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateCampground = async (req, res) => {
     const { id } = req.params;
+    console.log('from controllers/campgrounds.js updateCampground', req.body);
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
-    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename })); // this makes the arrey from objects
-    campground.images.push(...imgs); // spread the above, dont push the array just take the data from array and push the data
+    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    campground.images.push(...imgs);
     await campground.save();
+    if (req.body.deleteImages) {
+        for (let filename of req.body.deleteImages) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
+    }
     req.flash('success', 'Successfully updated campground!');
-    res.redirect(`/campgrounds/${campground._id}`);
+    res.redirect(`/campgrounds/${campground._id}`)
 }
 
 

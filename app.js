@@ -1,10 +1,15 @@
 // app.js
+require('dotenv').config();
+// if (process.env.NODE_ENV !== "production") {
+//     require('dotenv').config();
+// }
 
-if (process.env.NODE_ENV !== "production") {
-    require('dotenv').config();
-}
-
-console.log(process.env.SECRET);
+console.log('LOG FROM app.js:');
+console.log('Is .env passing information correctly? : ', process.env.ENV_CHECK);
+console.log(process.env.NODE_ENV);
+console.log(typeof process.env.NODE_ENV);
+console.log(process.env.NODE_ENV !== "production");
+console.log('---');
 
 const express = require('express');
 const path = require('path');

@@ -34,12 +34,12 @@ const seedDB = async () => {
             price,
             images: [
                 { 
-                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1629659328/YeloCamp/xdlv4zpypd1ffksajlfa.jpg',
-                  filename: 'YeloCamp/xdlv4zpypd1ffksajlfa'
+                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1629668236/YelpCamp/zfdwm83hvbbx9p5c0byx.jpg',
+                  filename: 'YelpCamp/zfdwm83hvbbx9p5c0byx'
                 },
                 {
-                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1629659328/YeloCamp/rqgdd21njpjl3hg9lwyl.jpg',
-                  filename: 'YeloCamp/rqgdd21njpjl3hg9lwyl'
+                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1629928238/YelpCamp/Sunset-over-tents-in-Suffolk_qwv1bo.jpg',
+                  filename: 'YelpCamp/Sunset-over-tents-in-Suffolk_qwv1bo'
                 }
               ]
         });

@@ -4,11 +4,26 @@
 
     <link rel="stylesheet" href="/stylesheets/stars.css">
 
-    <div class="row">
+    <script>
+        const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
+        const campground = <%- JSON.stringify(campground) %>;
+    </script>
 
-        <%=campground.images%>
+    <div class="row">
+        
+        <span class="mb-3">
+            <p>This can be delete letter, for development stage this shows campground.images</p>
+            <%=campground.images%>
+        </span>
 
             <div class="col-6">
+
+
+                <div id='map' style='width: 400px; height: 300px;'></div> <!-- MAPBOX -->
+                
+
+
+
                 <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
                         <% campground.images.forEach((img, i) => { %>
@@ -124,3 +139,6 @@
                             <% } %>
             </div>
     </div>
+
+
+<script src="/javascripts/showPageMap.js"></script>

@@ -26,6 +26,7 @@ const User = require('./models/user.js');
 const mongoSanitize = require('express-mongo-sanitize'); // Mongo Query Injection tool
 const helmet = require('helmet'); // Helmet helps you secure your Express apps by setting various HTTP headers. 
 
+const MongoStore = require('connect-mongo');
 
 
 const campgroundRoutes = require('./routes/campgrounds.js');
@@ -34,7 +35,11 @@ const userRoutes = require('./routes/users.js');
 
 
 // DATABASE CONNECTION
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';    // saved for future development
+// or 
+//const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+// mongoose.connect('mongodb://localhost:27017/yelp-camp', { // saved for future development
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -117,9 +122,28 @@ app.use(
 );
 // HELMET --stop
 
+// CONNECT-MONGO
+
+const secret = process.env.SECRET || 'thisshouldbeabettersecet';
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: secret;
+    }
+});
+
+
+store.on("error", function(e) {
+    console.log("Session Store Error", e)
+});
+
+// EXPRESS SESSION
 const sessionConfig = {
+    store: store,   // or just store,
     name: 'session_amended',    // this is a security feature: to change your default name of the cookie from "session" to "session_amended"
-    secret: 'thisshouldbeabettersecet',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -131,6 +155,9 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 app.use(flash());
+
+
+
 // ---
 
 

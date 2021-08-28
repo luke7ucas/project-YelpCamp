@@ -216,7 +216,7 @@ app.use((err, req, res, next) => {
 })
 /// ---
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;  // when we push to Heroku there will be env.PORT variable available
 app.listen(port, () => {
     console.log(`Serving on port ${port}`)
 });

@@ -1,8 +1,8 @@
 // app.js
-require('dotenv').config();
-// if (process.env.NODE_ENV !== "production") {
-//     require('dotenv').config();
-// }
+
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
 
 console.log('LOG FROM app.js:');
 console.log('Is .env passing information correctly? : ', process.env.ENV_CHECK);
@@ -24,6 +24,9 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user.js');
 const mongoSanitize = require('express-mongo-sanitize'); // Mongo Query Injection tool
+const helmet = require('helmet'); // Helmet helps you secure your Express apps by setting various HTTP headers. 
+
+
 
 const campgroundRoutes = require('./routes/campgrounds.js');
 const reviewRoutes = require('./routes/reviews');
@@ -59,14 +62,69 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());   // Mongo Query Injection tool
 
+// HELMET START ---
+app.use(helmet());  // enables all 11 middlewares that helmet comes with, one of the policies (ContentSecurityPolicy) will not be happy with our app and this is addressed in note 567 this can be temporarily mitigated by the code below
+// app.use(helmet({ contentSecurityPolicy: false}));
 
+// TO ALLOW FOR EXCEPTIONS IN ContentSecurityPolicy in Helmet
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+    "https://code.jquery.com"
+];
+const styleSrcUrls = [
+    "https://cdn.jsdelivr.net",
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+];
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://a.tiles.mapbox.com/",
+    "https://b.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+
+
+// HELMET CONFIGURATION
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/luke7ucas/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
+// HELMET --stop
 
 const sessionConfig = {
+    name: 'session_amended',    // this is a security feature: to change your default name of the cookie from "session" to "session_amended"
     secret: 'thisshouldbeabettersecet',
     resave: false,
     saveUninitialized: true,
     cookie: {
-        httpOnly: true,
+        httpOnly: true, // simple security, out cookies are only accessible thorugh HTML and not thorugh JS
+//        secure: true, // this will make this cookie work only over https but localhost is not https so we have to comment it out
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // a week from now
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -103,11 +161,11 @@ app.get('/', (req, res) => {
 
 
 // RE: PASSPORT
-app.get('/fakeUser', async (req, res) => {
-    const user = new User({ email: 'lukasz@gmail.com', username: 'lukasz' });
-    const newUser = await User.register(user, 'randompassword');
-    res.send(newUser);
-})
+// app.get('/fakeUser', async (req, res) => {
+//     const user = new User({ email: 'lukasz@gmail.com', username: 'lukasz' });
+//     const newUser = await User.register(user, 'randompassword');
+//     res.send(newUser);
+// })
 
 
 

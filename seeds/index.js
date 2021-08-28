@@ -23,12 +23,13 @@ const sample = array => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
     await Campground.deleteMany({});
+    console.log('from: seeds/index.js: Deleted all campgrounds.');
     for (let i = 0; i < 150; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
         const camp = new Campground({
             // YOUR USER ID
-            author: '6116aa5742b56904483beb5e',
+            author: '612a9ca52e0f944ed824641d',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam dolores vero perferendis laudantium, consequuntur voluptatibus nulla architecto, sit soluta esse iure sed labore ipsam a cum nihil atque molestiae deserunt!',
@@ -42,12 +43,12 @@ const seedDB = async () => {
             },
             images: [
                 { 
-                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1629668236/YelpCamp/zfdwm83hvbbx9p5c0byx.jpg',
-                  filename: 'YelpCamp/zfdwm83hvbbx9p5c0byx'
+                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1630182597/YelpCamp/ooggswowq3vgw50q2nhp.jpg',
+                  filename: 'YelpCamp/ooggswowq3vgw50q2nhp'
                 },
                 {
-                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1629928238/YelpCamp/Sunset-over-tents-in-Suffolk_qwv1bo.jpg',
-                  filename: 'YelpCamp/Sunset-over-tents-in-Suffolk_qwv1bo'
+                  url: 'https://res.cloudinary.com/luke7ucas/image/upload/v1630182596/YelpCamp/n2tepux6je3g9qp7n8fy.jpg',
+                  filename: 'YelpCamp/n2tepux6je3g9qp7n8fy'
                 }
               ]
         });

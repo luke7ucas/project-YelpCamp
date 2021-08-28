@@ -2,7 +2,7 @@
 
 mapboxgl.accessToken = mapToken; // source comes from the script on index.ejs
 const map = new mapboxgl.Map({
-    container: 'map',
+    container: 'cluster-map',
     style: 'mapbox://styles/mapbox/light-v10',
     center: [-103.5917, 40.6699],
     zoom: 3
@@ -16,7 +16,7 @@ map.on('load', () => {
         type: 'geojson',
         // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
         // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-//         data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson',
+        //         data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson',
         data: campgrounds,
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
@@ -106,8 +106,8 @@ map.on('load', () => {
     map.on('click', 'unclustered-point', (e) => {
         const coordinates = e.features[0].geometry.coordinates.slice();
         // const text = e.features[0].properties.popUpMarkup;
-        const {popUpMarkup} = e.features[0].properties; // desctructuring the line above
-        
+        const { popUpMarkup } = e.features[0].properties; // desctructuring the line above
+
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
         // popup appears over the copy being pointed to.
@@ -129,4 +129,9 @@ map.on('load', () => {
     map.on('mouseleave', 'clusters', () => {
         map.getCanvas().style.cursor = '';
     });
+
+
+    // Add zoom and rotation controls to the map.
+    map.addControl(new mapboxgl.NavigationControl());
+
 });
